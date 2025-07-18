@@ -1,0 +1,16 @@
+<svg width="40" height="40" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="dreamify-gradient" x1="0" y1="0" x2="40" y2="30" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1e3a8a"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <!-- Camera icon only for favicon -->
+  <g>
+    <rect x="10" y="15" rx="5" width="40" height="30" fill="url(#dreamify-gradient)"/>
+    <rect x="22" y="10" rx="2" width="16" height="8" fill="#1e3a8a"/>
+    <circle cx="30" cy="30" r="7" fill="#fff"/>
+    <circle cx="30" cy="30" r="4" fill="url(#dreamify-gradient)"/>
+    <circle cx="38" cy="22" r="2" fill="#fff" opacity="0.7"/>
+  </g>
+</svg>
