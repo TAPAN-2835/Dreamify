@@ -6,6 +6,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-toastify';
 import Button from '../components/Button';
 
+console.log('Stripe key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const BuyCredit = () => {
