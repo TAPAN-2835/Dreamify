@@ -76,14 +76,14 @@ const Result = () => {
         {/* Prompt Input & Generate Button */}
         {!isImageLoaded && (
           <form onSubmit={onSubmitHandler} className='w-full flex flex-col gap-3'>
-            <input
-              onChange={e => setInput(e.target.value)}
-              value={input}
-              type="text"
-              placeholder='Describe what you want to generate'
+              <input
+                onChange={e => setInput(e.target.value)}
+                value={input}
+                type="text"
+                placeholder='Describe what you want to generate'
               className='w-full bg-neutral-100 text-black text-base px-4 py-3 rounded-full placeholder-color outline-none mb-2 sm:mb-0'
-              style={{ wordBreak: 'break-word', color: '#000' }}
-            />
+                style={{ wordBreak: 'break-word', color: '#000' }}
+              />
             <button type='submit' className='w-full bg-zinc-900 text-white py-3 text-base rounded-full hover:bg-black transition'>Generate</button>
             <div className='flex justify-between mt-2'>
               <button type='button' onClick={handleRandomPrompt} className='text-blue-600 hover:underline text-xs'>Try Random Prompt</button>

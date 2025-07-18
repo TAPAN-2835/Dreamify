@@ -32,7 +32,7 @@ const Header = () => {
   }
 
   return (
-    <motion.div className='flex flex-col justify-center items-center text-center py-10' initial={{ opacity: 0.2, y: 100 }} transition={{ duration: 1 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+    <motion.div className='flex flex-col justify-center items-center text-center py-8' initial={{ opacity: 0.2, y: 100 }} transition={{ duration: 1 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
       {/* Mobile greeting above oval text */}
       {user && (
         <div className="sm:hidden flex justify-center w-full mb-4">

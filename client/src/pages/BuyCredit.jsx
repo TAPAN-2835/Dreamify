@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { assets, plans } from '../assets/assets';
 import { AppContext } from '../context/AppContext';
 import { motion } from 'framer-motion';
@@ -6,15 +6,14 @@ import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-toastify';
 import Button from '../components/Button';
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const BuyCredit = () => {
-  const { user, backendUrl, loadCreditsData, token, credit } = useContext(AppContext);
+  const { user, backendUrl, loadCreditsData, credit } = useContext(AppContext);
 
   const handlePurchase = async (planId) => {
     try {
       const stripe = await stripePromise;
-
       // Retrieve userId from local storage
       const userId = localStorage.getItem('userId');
       if (!userId) {
@@ -35,7 +34,7 @@ const BuyCredit = () => {
       if (response.ok && session.url) {
         // Redirect to the Stripe Checkout session
         handlePostPayment(planId,userId);
-        window.location.href = session.url;
+        await stripe.redirectToCheckout({ sessionId: session.url.split('/').pop() });
       } else {
         throw new Error(session.message || 'Failed to create checkout session.');
       }
