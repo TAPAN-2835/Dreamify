@@ -74,9 +74,9 @@ const Header = () => {
 
       {/* Modal for image preview */}
       {modalOpen && (
-        <div className='fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50'>
-          <div className='bg-white p-4 rounded-lg shadow-lg relative'>
-            <button onClick={closeModal} aria-label='Close preview modal' className='absolute top-2 right-2 text-gray-500 hover:text-black text-xl' tabIndex={0}>&times;</button>
+        <div className='fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50' onClick={closeModal}>
+          <div className='bg-white p-4 rounded-lg shadow-lg relative' onClick={e => e.stopPropagation()}>
+            <button onClick={closeModal} aria-label='Close preview modal' className='absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full text-gray-500 bg-gray-200 hover:text-black transition text-xl focus:outline-none' tabIndex={0}>&times;</button>
             <img src={modalImg} alt='Large preview of generated sample image' className='max-w-xs max-h-[70vh] rounded' />
           </div>
         </div>

@@ -1,10 +1,39 @@
-import { useContext } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import { assets } from '../assets/assets'
 import { Link, useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 const Navbar = () => {
     const {user,setShowLogin,logout,credit} = useContext(AppContext)
     const navigate = useNavigate();
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const profileRef = useRef(null);
+
+    const handleProfileClick = () => {
+        setShowProfileMenu(!showProfileMenu);
+    };
+
+    const handleLogout = () => {
+        logout();
+        setShowProfileMenu(false);
+    };
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setShowProfileMenu(false);
+            }
+        };
+
+        if (showProfileMenu) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showProfileMenu]);
+
     return (
         <div className='w-full sticky top-0 left-0 z-50 bg-gradient-to-b from-teal-50 to-orange-50 dark:from-gray-900 dark:to-gray-800 shadow flex items-center justify-between py-3 px-4 sm:px-10 md:px-14 lg:px-28'>
             <button onClick={() => { navigate('/'); setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100); }} className='focus:outline-none'>
@@ -20,14 +49,20 @@ const Navbar = () => {
                     </button>
                     {/* Desktop/tablet greeting */}
                     <p className='text-gray-600 hidden sm:block pl-4'>Hi , {user.name}</p>
-                    <div className='relative group'>
-                        <img src={assets.profile_icon} className='w-10 drop-shadow' alt="" />
-                        <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black pt-12'>
-                            <ul className='list-none m-0 p-0 text-sm'>
-                                <li onClick={logout} className='rounded-full bg-blue-600 text-white px-6 py-2 cursor-pointer hover:bg-black transition text-center'>Logout</li>
-                            </ul>
-
-                        </div>
+                    <div className='relative' ref={profileRef}>
+                        <button 
+                            onClick={handleProfileClick}
+                            className='focus:outline-none hover:scale-105 transition-transform duration-200'
+                        >
+                            <img src={assets.profile_icon} className='w-10 drop-shadow' alt="Profile" />
+                        </button>
+                        {showProfileMenu && (
+                            <div className='absolute top-full right-0 mt-2 z-50'>
+                                <ul className='list-none m-0 p-0 text-sm'>
+                                    <li onClick={handleLogout} className='rounded-full bg-blue-600 text-white px-6 py-2 cursor-pointer hover:bg-black transition text-center shadow-lg'>Logout</li>
+                                </ul>
+                            </div>
+                        )}
                     </div>
                 </div> 
                 : 

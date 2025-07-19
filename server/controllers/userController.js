@@ -64,4 +64,25 @@ const userCredits = async (req,res)=>{
     res.json({success:false,message:error.message})
   }
 }
-export{registerUser,loginUser,userCredits}
+
+const updatePassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    if (!email || !newPassword) {
+      return res.json({ success: false, message: "Missing email or new password" });
+    }
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    user.password = hashedPassword;
+    await user.save();
+    res.json({ success: true, message: "Password updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+}
+export{registerUser,loginUser,userCredits,updatePassword}
