@@ -1,143 +1,438 @@
-Dreamify — AI image generation studio (web + API + worker) with real-time progress, billing and queueing.
+# Dreamify — AI Image Generation Platform
 
-This repository contains the full-stack Dreamify application: a React + Vite front-end, an Express API server, background image-generation workers (BullMQ + Redis), and supporting infra (MongoDB, Cloudinary, Stripe). It's designed for production readiness with Docker, CI, PM2 config, and tests.
+<div align="center">
+
+### Production-grade AI image generation platform with distributed workers, real-time updates, secure billing, and scalable infrastructure.
+
+<br/>
+
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge\&logo=react\&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge\&logo=vite\&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge\&logo=nodedotjs\&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge\&logo=express\&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-13AA52?style=for-the-badge\&logo=mongodb\&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-D92D2A?style=for-the-badge\&logo=redis\&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge\&logo=socketdotio\&logoColor=white)
+![BullMQ](https://img.shields.io/badge/BullMQ-EA4C89?style=for-the-badge)
+![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge\&logo=stripe\&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge\&logo=cloudinary\&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge\&logo=docker\&logoColor=white)
+
+<br/>
+
+![Status](https://img.shields.io/badge/Status-Production_Ready-success?style=flat-square)
+![Architecture](https://img.shields.io/badge/Architecture-Distributed-blueviolet?style=flat-square)
+![Realtime](https://img.shields.io/badge/Realtime-Socket.io-orange?style=flat-square)
+![Queue](https://img.shields.io/badge/Queue-BullMQ-red?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+
+</div>
 
 ---
 
-## Table of contents
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Getting started (local)](#getting-started-local)
-- [Docker / Production](#docker--production)
-- [Environment variables](#environment-variables)
-- [Testing](#testing)
-- [Deployment & CI](#deployment--ci)
-- [Contributing](#contributing)
-- [License](#license)
+## Overview
+
+Dreamify is a modern AI-powered image generation platform engineered with a distributed backend architecture for scalability and production deployment.
+
+The platform combines:
+
+* Real-time Socket.io updates
+* Distributed BullMQ workers
+* Redis-backed job queues
+* Secure Stripe billing
+* Cloudinary CDN delivery
+* Admin analytics
+* Enterprise-grade security hardening
+
+The system is designed to process high-concurrency AI workloads asynchronously without blocking the main Node.js event loop.
 
 ---
 
-## Features
-- Real-time generation progress via Socket.io (no polling)
-- Background queue processing with BullMQ and Redis
-- WebP conversion, thumbnails, and LQIP blur placeholders (sharp)
-- Prompt caching to reduce duplicate generation costs
-- Cancelable jobs and generation retry/error flows
-- Stripe Checkout + webhook-based credit provisioning
-- Admin queue dashboard (Bull Board)
-- Production-ready: Dockerfiles, nginx proxy config, `docker-compose.yml` and PM2 ecosystem
+## Core Features
+
+### AI Image Generation
+
+* AI-powered text-to-image generation
+* Asynchronous generation pipeline
+* Prompt optimization workflow
+* Retry and failure handling
+* Intelligent generation caching
+
+### Real-Time Infrastructure
+
+* Socket.io live progress updates
+* Real-time job synchronization
+* Private user socket rooms
+* Zero polling architecture
+
+### Distributed Queue System
+
+* BullMQ background processing
+* Redis-backed reliable queues
+* Exponential retry/backoff
+* Queue prioritization support
+* Cancelable generation jobs
+
+### Image Processing Pipeline
+
+* Automatic WebP conversion
+* Thumbnail generation
+* Blur placeholder previews (LQIP)
+* Cloudinary CDN delivery
+* Optimized media compression
+
+### Billing & Credits
+
+* Stripe Checkout integration
+* Secure webhook verification
+* Credit ledger system
+* Atomic balance mutations
+* Transaction history tracking
+
+### Admin Analytics
+
+* Revenue monitoring
+* Queue analytics
+* Generation statistics
+* User leaderboards
+* Performance insights
+
+### Security
+
+* Helmet security hardening
+* API rate limiting
+* JWT authentication
+* Secure cookies
+* Environment validation
+* Protected admin routes
+* Centralized error handling
+
+---
+
+## System Architecture
+
+```text
+                    ┌────────────────────┐
+                    │     React SPA      │
+                    │   Vite Frontend    │
+                    └─────────┬──────────┘
+                              │
+                     Socket.io│REST API
+                              │
+              ┌───────────────▼────────────────┐
+              │        Express Server          │
+              │  Auth • Billing • API • IO    │
+              └───────────────┬────────────────┘
+                              │
+                Queue Jobs    │    Real-time Events
+                              │
+                    ┌─────────▼─────────┐
+                    │    Redis Broker   │
+                    │   BullMQ Queue    │
+                    └─────────┬─────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │  Worker Process   │
+                    │ AI Generation Job │
+                    └─────────┬─────────┘
+                              │
+                ┌─────────────┴─────────────┐
+                │                           │
+        ┌───────▼────────┐        ┌────────▼────────┐
+        │   Cloudinary   │        │    MongoDB      │
+        │  Image Storage │        │ Persistent Data │
+        └────────────────┘        └─────────────────┘
+```
+
+---
 
 ## Tech Stack
-- Frontend: React, Vite, Tailwind CSS, Framer Motion
-- API: Node.js, Express
-- Realtime: Socket.io
-- Queue: BullMQ (workers) + Redis
-- Storage: MongoDB (Mongoose), Cloudinary (image hosting)
-- Image processing: sharp (WebP, thumbnails, LQIP)
-- Billing: Stripe Checkout + webhooks
-- CI: GitHub Actions
-- Containers / Runtime: Docker, Nginx, PM2
-- Testing: Jest, Supertest
 
-Suggested repository topics / tags: `react`, `vite`, `tailwindcss`, `framer-motion`, `nodejs`, `express`, `socket.io`, `bullmq`, `redis`, `mongodb`, `cloudinary`, `stripe`, `sharp`, `docker`, `ci`, `jest`, `supertest`.
+### Frontend
 
-## Architecture
-High-level overview:
-- Client (SPA) — user prompts, result preview, history, billing pages.
-- Server (Express) — REST API, Stripe webhook, authentication, and exposes `io` for workers.
-- Workers — dequeue generation jobs, call AI provider, process images (sharp), upload to Cloudinary, and emit socket updates.
-- Queue & Broker — BullMQ backed by Redis for reliable background processing.
+* React 19
+* Vite
+* Tailwind CSS
+* Framer Motion
+* Socket.io Client
+* Recharts
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) and [SOCKET_ARCHITECTURE.md](SOCKET_ARCHITECTURE.md) for more details.
+### Backend
 
-## Getting started (local)
-Prerequisites: Node.js 18+, Docker (if using docker-compose), Redis, MongoDB.
+* Node.js
+* Express.js
+* Socket.io
+* JWT Authentication
+* Helmet
 
-1. Clone the repo
+### Database & Storage
+
+* MongoDB + Mongoose
+* Redis
+* Cloudinary
+
+### Queue & Workers
+
+* BullMQ
+* Redis Workers
+* Sharp Image Processing
+
+### Payments
+
+* Stripe Checkout
+* Stripe Webhooks
+
+### DevOps & Infrastructure
+
+* Docker
+* PM2
+* GitHub Actions
+* Morgan Logging
+
+---
+
+## Production Engineering Highlights
+
+### Secure Stripe Architecture
+
+Dreamify uses a secure webhook-based payment flow.
+
+* Frontend never grants credits
+* Stripe webhook verifies signatures
+* Duplicate processing is prevented
+* Transactions are immutable
+
+### Distributed AI Processing
+
+Heavy AI workloads never block the API server.
+
+Workflow:
+
+1. API validates request
+2. Job enters BullMQ queue
+3. Worker processes generation
+4. Socket emits progress updates
+5. Cloudinary stores optimized image
+6. Result streams back instantly
+
+### Real-Time Updates Without Polling
+
+The frontend receives:
+
+* Queue progress
+* Generation states
+* Completion updates
+* Error states
+
+through Socket.io private rooms in real time.
+
+### Optimized Media Pipeline
+
+Generated images are:
+
+* Converted to WebP
+* CDN-hosted on Cloudinary
+* Thumbnail optimized
+* Blur-preview enhanced
+* Cached for duplicate prompts
+
+---
+
+## Project Structure
 
 ```bash
-git clone <your-repo-url> dreamify
+Dreamify/
+│
+├── client/                 # React Frontend
+│   ├── src/
+│   ├── public/
+│   └── vite.config.js
+│
+├── server/                 # Express Backend
+│   ├── controllers/
+│   ├── routes/
+│   ├── middleware/
+│   ├── models/
+│   ├── workers/
+│   ├── queues/
+│   ├── config/
+│   └── lib/
+│
+├── docker-compose.yml
+├── ecosystem.config.js
+└── README.md
+```
+
+---
+
+## Local Development Setup
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/your-username/dreamify.git
+
 cd dreamify
 ```
 
-2. Copy environment example and set secrets
+---
 
-```bash
-cp .env.example .env
-# edit .env and set keys (Cloudinary, Stripe, MongoDB, Clipdrop, etc.)
-```
+### 2. Install Dependencies
 
-3. Install and run services locally (dev mode)
+#### Frontend
 
-Server
-```bash
-cd server
-npm ci
-npm run dev
-```
-
-Client
 ```bash
 cd client
-npm ci
+npm install
+```
+
+#### Backend
+
+```bash
+cd server
+npm install
+```
+
+---
+
+### 3. Configure Environment Variables
+
+Create `.env` inside `/server`
+
+```env
+PORT=4000
+
+MONGODB_URI=
+REDIS_URL=
+
+JWT_SECRET=
+
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+CLIPDROP_API_KEY=
+
+CLIENT_URL=http://localhost:5173
+```
+
+---
+
+### 4. Run Development Servers
+
+#### Start Backend
+
+```bash
 npm run dev
 ```
 
-Workers
+#### Start Worker
+
 ```bash
-cd server
 npm run worker
 ```
 
-Notes:
-- The server exposes `/health` for quick checks.
-- The client expects the backend URL via environment variables (see `client/README` or `client/package.json` scripts).
-
-## Docker / Production
-Build and run everything with `docker-compose` (development or simple production stack):
+#### Start Frontend
 
 ```bash
-docker-compose up --build -d
+npm run dev
 ```
 
-Services started:
-- `mongo`, `redis`, `server` (port 4000), `client` (port 80)
+---
 
-For production, ensure you run behind a TLS terminator and set all environment variables securely. See `ecosystem.config.js` for PM2-based process management and `.github/workflows/ci.yml` for CI wiring.
-
-## Environment variables
-Copy `.env.example` to `.env` and populate values. Key variables used include:
-- `MONGODB_URI`, `REDIS_URL`
-- `JWT_SECRET`
-- `CLIPDROP_API_KEY` (or other AI provider key)
-- `CLOUDINARY_*` keys
-- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
-
-## Testing
-Server tests use Jest + Supertest. Run from the `server` folder:
+## Docker Setup
 
 ```bash
-cd server
-npm ci
+docker-compose up --build
+```
+
+Services:
+
+* MongoDB
+* Redis
+* Express API
+* Worker
+* React Client
+
+---
+
+## Admin Features
+
+* Queue monitoring dashboard
+* Revenue analytics
+* Daily generation tracking
+* Top user leaderboard
+* Credit adjustment tools
+* Worker health monitoring
+
+---
+
+## Security Features
+
+* JWT Authentication
+* HTTPOnly Secure Cookies
+* Stripe Signature Verification
+* API Rate Limiting
+* Helmet Protection
+* Centralized Error Handling
+* Environment Validation
+* Admin Route Protection
+* CORS Hardening
+
+---
+
+## Scalability Design
+
+Dreamify is engineered for horizontal scaling:
+
+* Multiple worker processes
+* Distributed Redis queues
+* Stateless Express APIs
+* CDN-delivered assets
+* Socket.io room architecture
+* Optimized database indexing
+
+---
+
+## Testing
+
+```bash
 npm test
 ```
 
-We include tests for the health endpoint, Stripe webhook handling (mocked), and a safe import test for the worker module.
+Includes:
 
-## Deployment & CI
-- GitHub Actions workflow `/.github/workflows/ci.yml` performs install and client build steps on push/pull requests.
-- For full CI: extend the workflow to run `server` tests and run linting steps.
-- Use the provided `Dockerfile`s and `docker-compose.yml` for containerized deployments.
+* API integration tests
+* Stripe webhook tests
+* Queue tests
+* Worker tests
+* Controller unit tests
 
-## Contributing
-1. Open an issue to discuss features or bugs.
-2. Create a feature branch: `git checkout -b feat/your-feature`
-3. Run tests and linters locally.
-4. Open a PR and request reviews; ensure CI passes.
+---
 
-## Contact
-Author / Maintainer: (add your name and contact info here)
+## Deployment
 
-## License
-This project is released under the MIT License. Replace or update as appropriate for your organization.
+Production deployment supports:
+
+* Docker containers
+* PM2 clustering
+* Nginx reverse proxy
+* CI/CD pipelines
+* GitHub Actions workflows
+
+---
+
+## Future Roadmap
+
+* AI style presets
+* Team workspaces
+* Multi-provider AI routing
+* Voice prompt generation
+* Mobile application
+* WebRTC collaboration
+* AI prompt enhancement engine
+
+---
