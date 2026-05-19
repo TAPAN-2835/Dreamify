@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals';
+
 // Ensure worker module can be imported safely by mocking Worker
 jest.mock('bullmq', () => ({ Worker: function Worker() { return {}; } }));
 jest.mock('../config/redis.js', () => ({}));

@@ -11,14 +11,18 @@ const redisConfig = {
   },
 };
 
-const connection = new Redis(process.env.REDIS_URL || redisConfig);
+const connection = process.env.NODE_ENV === 'test'
+  ? { on: () => {}, disconnect: async () => {} }
+  : new Redis(process.env.REDIS_URL || redisConfig);
 
-connection.on('error', (err) => {
-  console.error('Redis connection error:', err);
-});
+if (process.env.NODE_ENV !== 'test') {
+  connection.on('error', (err) => {
+    console.error('Redis connection error:', err);
+  });
 
-connection.on('connect', () => {
-  console.log('Connected to Redis successfully');
-});
+  connection.on('connect', () => {
+    console.log('Connected to Redis successfully');
+  });
+}
 
 export default connection;
