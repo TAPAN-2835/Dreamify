@@ -16,8 +16,9 @@ yarn-error.log*
 build/
 dist/
 
-# React
+# React / client
 client/node_modules/
+client/dist/
 client/build/
 
 # OS files
@@ -38,3 +39,32 @@ Thumbs.db
 
 # Optional eslint cache
 .eslintcache 
+
+# Ignore all markdown files except the repo README.md
+**/*.md
+!/README.md
+
+# Vercel / Render / hosting local files to ignore
+.vercel
+/.vercel
+/.vercel/*
+.render
+/.render
+
+# Editor folders
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Cache / coverage
+.cache/
+.parcel-cache/
+coverage/
+.nyc_output/
+
+# Next/Vite build outputs that shouldn't be committed
+.next/
+out/

@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - '27017:27017'
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+
+  server:
+    build: ./server
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      - PORT=4000
+      - MONGODB_URI=mongodb://mongo:27017/dreamify
+      - REDIS_URL=redis://redis:6379
+      - CLIENT_URL=http://localhost:80
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./server:/app
+
+  client:
+    build: ./client
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - '80:80'
+    volumes:
+      - ./client:/app
+
+volumes:
+  mongo-data:

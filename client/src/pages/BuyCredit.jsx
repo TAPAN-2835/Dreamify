@@ -2,20 +2,14 @@ import { useContext } from 'react';
 import { assets, plans } from '../assets/assets';
 import { AppContext } from '../context/AppContext';
 import { motion } from 'framer-motion';
-import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-toastify';
 import Button from '../components/Button';
 
-console.log('Stripe key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-
 const BuyCredit = () => {
-  const { user, backendUrl, loadCreditsData, credit } = useContext(AppContext);
+  const { user, backendUrl, credit } = useContext(AppContext);
 
   const handlePurchase = async (planId) => {
     try {
-      const stripe = await stripePromise;
       // Retrieve userId from local storage
       const userId = localStorage.getItem('userId');
       if (!userId) {
@@ -34,9 +28,8 @@ const BuyCredit = () => {
       const session = await response.json();
 
       if (response.ok && session.url) {
-        // Redirect to the Stripe Checkout session
-        handlePostPayment(planId,userId);
-        await stripe.redirectToCheckout({ sessionId: session.url.split('/').pop() });
+        // Redirect to the Stripe Checkout session directly
+        window.location.href = session.url;
       } else {
         throw new Error(session.message || 'Failed to create checkout session.');
       }
@@ -45,45 +38,6 @@ const BuyCredit = () => {
       toast.error(error.message || 'An error occurred while processing the payment.');
     }
   };
-
-  const handlePostPayment = async (planId,userId) => {
-
-    if (planId && userId) {
-      try {
-        // Confirm payment and update credits
-        const response = await fetch(`${backendUrl}/api/stripe/confirm-payment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ planId, userId }),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          toast.success('Credits updated successfully!');
-          console.log('Payment confirmed:', result);
-
-          // Optionally reload credits data after successful payment
-          if (loadCreditsData) loadCreditsData();
-        } else {
-          throw new Error(result.message || 'Failed to confirm payment.');
-        }
-      } catch (error) {
-        console.error('Error confirming payment:', error.message);
-        toast.error(error.message || 'An error occurred while confirming the payment.');
-      }
-    }
-  };
-
-  // Check for post-payment success only when the URL has the `success=true` parameter
-  // useEffect(() => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   if (urlParams.get('success') === 'true') {
-  //     handlePostPayment();
-  //   }
-  // }, []);
 
   return (
     <motion.div

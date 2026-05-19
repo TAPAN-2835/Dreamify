@@ -21,7 +21,14 @@ const registerUser = async (req, res) => {
     const newUser = new userModel(userData);
     const user = await newUser.save();
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    });
 
     res.json({ success: true, token, user: { id: user._id, name: user.name } });
   } catch (error) {
@@ -42,7 +49,15 @@ const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+      
+      res.cookie('auth_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+      });
+
       res.json({ success: true, token, user: { id: user._id, email: user.email } });
     } else {
       return res.json({ success: false, message: "Invalid credentials" });
@@ -52,7 +67,6 @@ const loginUser = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
-
 
 const userCredits = async (req,res)=>{
   try {
@@ -67,11 +81,11 @@ const userCredits = async (req,res)=>{
 
 const updatePassword = async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
-    if (!email || !newPassword) {
-      return res.json({ success: false, message: "Missing email or new password" });
+    const { userId, newPassword } = req.body;
+    if (!newPassword) {
+      return res.json({ success: false, message: "Missing new password" });
     }
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findById(userId);
     if (!user) {
       return res.json({ success: false, message: "User not found" });
     }

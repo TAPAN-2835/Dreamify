@@ -12,6 +12,21 @@ const Navbar = () => {
         setShowProfileMenu(!showProfileMenu);
     };
 
+    // Theme (dark mode) handling with localStorage persistence
+    const [theme, setTheme] = useState(() => {
+        try {
+            return localStorage.getItem('theme') || 'light';
+        } catch { return 'light'; }
+    });
+
+    useEffect(() => {
+        try {
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', theme);
+        } catch (e) { /* ignore */ }
+    }, [theme]);
+
     const handleLogout = () => {
         logout();
         setShowProfileMenu(false);
@@ -43,6 +58,11 @@ const Navbar = () => {
             <div>
                 {user ?
                  <div className='flex items-center gap-2 sm:gap-3'>
+                    {/* Theme toggle */}
+                    <button onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+                        className='hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/60 dark:bg-gray-700/60 hover:scale-105 transition'>
+                        {theme === 'dark' ? '🌙' : '☀️'}
+                    </button>
                     <button onClick={()=>navigate('/buy')} className='flex items-center gap-2 bg-blue-100 px-4 sm:px-6 py-1.5 sm:py-3 rounded-full hover:scale-105 transition-all duration-700'>
                         <img className='w-5' src={assets.credit_star} alt="" />
                         <p className='text-xs sm:text-sm font-medium text-gray-600'>Credits Left : {credit}</p>
@@ -59,7 +79,9 @@ const Navbar = () => {
                         {showProfileMenu && (
                             <div className='absolute top-full right-0 mt-2 z-50'>
                                 <ul className='list-none m-0 p-0 text-sm'>
-                                    <li onClick={handleLogout} className='rounded-full bg-blue-600 text-white px-6 py-2 cursor-pointer hover:bg-black transition text-center shadow-lg'>Logout</li>
+                                    <li onClick={() => { navigate('/history'); setShowProfileMenu(false); }} className='bg-white text-gray-700 px-6 py-2 cursor-pointer hover:bg-gray-100 transition text-center shadow-lg border border-gray-100'>History</li>
+                                    <li onClick={() => { navigate('/invoices'); setShowProfileMenu(false); }} className='bg-white text-gray-700 px-6 py-2 cursor-pointer hover:bg-gray-100 transition text-center shadow-lg border border-gray-100'>Invoices</li>
+                                    <li onClick={handleLogout} className='bg-blue-600 text-white px-6 py-2 cursor-pointer hover:bg-black transition text-center shadow-lg rounded-b-lg border border-blue-600'>Logout</li>
                                 </ul>
                             </div>
                         )}
