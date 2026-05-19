@@ -9,7 +9,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const env = cleanEnv(process.env, {
   JWT_SECRET: isTest ? str({ default: process.env.JWT_SECRET || 'test_secret' }) : str(),
   MONGODB_URI: isTest ? str({ default: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/dreamify_test' }) : str(),
-  REDIS_URL: isTest ? str({ default: process.env.REDIS_URL || 'redis://127.0.0.1:6379' }) : str(),
+  REDIS_URL: isTest ? str({ default: process.env.REDIS_URL }) : str(),
   STRIPE_SECRET_KEY: isTest ? str({ default: process.env.STRIPE_SECRET_KEY || 'sk_test_dummy' }) : str(),
   STRIPE_WEBHOOK_SECRET: isTest ? str({ default: process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test' }) : str(),
   CLIPDROP_API_KEY: isTest ? str({ default: process.env.CLIPDROP_API_KEY || 'test_clipdrop_key' }) : str(),
