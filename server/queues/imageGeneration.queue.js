@@ -1,10 +1,10 @@
 import { Queue } from 'bullmq';
-import connection from '../config/redis.js';
+import { redisConnectionConfig } from '../config/redis.js';
 
 let imageGenerationQueue = null;
 if (process.env.NODE_ENV !== 'test') {
   imageGenerationQueue = new Queue('image-generation', {
-    connection,
+    connection: redisConnectionConfig,
     defaultJobOptions: {
       attempts: 3,
       backoff: {

@@ -1,5 +1,5 @@
 import { Worker } from 'bullmq';
-import connection from '../config/redis.js';
+import { redisConnectionConfig } from '../config/redis.js';
 import GenerationJob from '../models/GenerationJob.js';
 import userModel from '../models/userModel.js';
 import GeneratedImage from '../models/GeneratedImage.js';
@@ -189,7 +189,7 @@ const worker = new Worker('image-generation', async (job) => {
 
     throw error;
   }
-}, { connection, concurrency: 5 });
+}, { connection: redisConnectionConfig, concurrency: 5 });
 
 worker.on('failed', (job, err) => console.error(`[Worker] ${job?.id} failed: ${err.message}`));
 worker.on('completed', (job) => console.log(`[Worker] ${job?.id} completed`));
