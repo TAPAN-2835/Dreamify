@@ -1,12 +1,12 @@
 import express from 'express'
 import { generateImage, getJobStatus, cancelJob, getUserHistory, deleteHistoryItem } from '../controllers/imageController.js'
 import userAuth from '../middleware/auth.js'
-import rateLimit from 'express-rate-limit'
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit'
 
 const generateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 20,
-  keyGenerator: (req) => req.body.userId || req.ip,
+  keyGenerator: (req) => req.body.userId || ipKeyGenerator(req),
   message: { success: false, message: 'Generation limit reached, please try again later' }
 });
 

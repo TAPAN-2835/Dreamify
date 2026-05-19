@@ -11,6 +11,10 @@ const redisConfig = {
   },
 };
 
+if (process.env.NODE_ENV !== 'test' && !process.env.REDIS_URL) {
+  throw new Error('REDIS_URL is required in production. Set REDIS_URL in your environment.');
+}
+
 const connection = process.env.NODE_ENV === 'test'
   ? { on: () => {}, disconnect: async () => {} }
   : new Redis(process.env.REDIS_URL || redisConfig);

@@ -1,18 +1,21 @@
+import { jest } from '@jest/globals';
 import request from 'supertest';
-import app from '../app.js';
-import Stripe from 'stripe';
 
-jest.mock('stripe');
+const Stripe = jest.fn();
+jest.unstable_mockModule('stripe', () => ({ default: Stripe }));
+
+let app;
+beforeAll(async () => {
+  Stripe.mockImplementation(() => ({
+    webhooks: {
+      constructEvent: (body, sig, secret) => ({ type: 'checkout.session.completed' })
+    }
+  }));
+  const mod = await import('../app.js');
+  app = mod.default;
+});
 
 describe('Stripe webhook', () => {
-  beforeAll(() => {
-    Stripe.mockImplementation(() => ({
-      webhooks: {
-        constructEvent: (body, sig, secret) => ({ type: 'checkout.session.completed' })
-      }
-    }));
-  });
-
   it('responds 200 when signature valid', async () => {
     const res = await request(app)
       .post('/api/stripe/webhook')

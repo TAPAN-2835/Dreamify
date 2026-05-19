@@ -5,12 +5,15 @@ dotenv.config();
 
 import { cleanEnv, str, num } from 'envalid';
 
+const isTest = process.env.NODE_ENV === 'test';
 const env = cleanEnv(process.env, {
-  JWT_SECRET: str({ default: process.env.JWT_SECRET || '' }),
-  MONGODB_URI: str({ default: process.env.MONGODB_URI || '' }),
-  STRIPE_SECRET_KEY: str({ default: process.env.STRIPE_SECRET_KEY || '' }),
-  STRIPE_WEBHOOK_SECRET: str({ default: process.env.STRIPE_WEBHOOK_SECRET || '' }),
-  CLIPDROP_API_KEY: str({ default: process.env.CLIPDROP_API_KEY || '' }),
+  JWT_SECRET: isTest ? str({ default: process.env.JWT_SECRET || 'test_secret' }) : str(),
+  MONGODB_URI: isTest ? str({ default: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/dreamify_test' }) : str(),
+  REDIS_URL: isTest ? str({ default: process.env.REDIS_URL || 'redis://127.0.0.1:6379' }) : str(),
+  STRIPE_SECRET_KEY: isTest ? str({ default: process.env.STRIPE_SECRET_KEY || 'sk_test_dummy' }) : str(),
+  STRIPE_WEBHOOK_SECRET: isTest ? str({ default: process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test' }) : str(),
+  CLIPDROP_API_KEY: isTest ? str({ default: process.env.CLIPDROP_API_KEY || 'test_clipdrop_key' }) : str(),
+  CLIENT_URL: str({ default: 'http://localhost:5173' }),
   PORT: num({ default: 4000 })
 });
 
@@ -37,7 +40,8 @@ const app = express();
 // Configure Bull Board
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/admin/queues');
-createBullBoard({ queues: [new BullMQAdapter(imageGenerationQueue)], serverAdapter });
+const bullBoardQueues = imageGenerationQueue ? [new BullMQAdapter(imageGenerationQueue)] : [];
+createBullBoard({ queues: bullBoardQueues, serverAdapter });
 
 // Security middleware
 app.use(helmet({ contentSecurityPolicy: false }));

@@ -1,9 +1,21 @@
 import { jest } from '@jest/globals';
 
 // Ensure worker module can be imported safely by mocking Worker
-jest.mock('bullmq', () => ({ Worker: function Worker() { return {}; } }));
+jest.mock('bullmq', () => ({
+  Worker: class Worker {
+    constructor() { this.handlers = {}; }
+    on(event, fn) { this.handlers[event] = fn; return this; }
+  }
+}));
 jest.mock('../config/redis.js', () => ({}));
-jest.mock('cloudinary', () => ({ v2: { uploader: { upload_stream: jest.fn((opts, cb) => ({ end: () => cb(null, { secure_url: 'https://example.com/img.webp' }) })) } } }));
+jest.mock('cloudinary', () => ({
+  v2: {
+    uploader: {
+      upload_stream: jest.fn((opts, cb) => ({ end: () => cb(null, { secure_url: 'https://example.com/img.webp' }) }))
+    },
+    config: jest.fn()
+  }
+}));
 jest.mock('sharp', () => (buffer => ({ webp: () => ({ toBuffer: async () => Buffer.from('') }), resize: () => ({ webp: () => ({ toBuffer: async () => Buffer.from('') }) }), blur: () => ({ webp: () => ({ toBuffer: async () => Buffer.from('') }) }) })));
 jest.mock('../models/GenerationJob.js', () => ({ findByIdAndUpdate: jest.fn() }));
 jest.mock('../models/GeneratedImage.js', () => ({ findOne: jest.fn().mockResolvedValue(null), create: jest.fn() }));
