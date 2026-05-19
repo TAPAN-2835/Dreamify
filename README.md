@@ -1,10 +1,8 @@
-# ✨ Dreamify — AI Image Generation Platform
+# Dreamify — AI Image Generation Platform
 
 <div align="center">
 
-### Generate. Queue. Stream. Scale.
-
-A production-grade AI image generation platform built with modern distributed architecture — featuring real-time generation updates, secure billing, scalable workers, Redis queues, Cloudinary optimization, and enterprise-ready infrastructure.
+### Production-grade AI image generation platform with distributed workers, real-time updates, secure billing, and scalable infrastructure.
 
 <br/>
 
@@ -32,42 +30,42 @@ A production-grade AI image generation platform built with modern distributed ar
 
 ---
 
-# 🚀 Overview
+## Overview
 
-Dreamify is a modern AI-powered image generation ecosystem engineered with a **distributed backend architecture** for real-world scalability and production deployment.
+Dreamify is a modern AI-powered image generation platform engineered with a distributed backend architecture for scalability and production deployment.
 
-Unlike basic AI image generators, Dreamify uses:
+The platform combines:
 
-* ⚡ Background worker queues
-* 🔄 Real-time Socket.io updates
-* 🧠 Intelligent prompt caching
-* 💳 Secure Stripe billing infrastructure
-* ☁️ Cloud-native media storage
-* 📈 Admin analytics dashboards
-* 🛡️ Enterprise-grade security hardening
+* Real-time Socket.io updates
+* Distributed BullMQ workers
+* Redis-backed job queues
+* Secure Stripe billing
+* Cloudinary CDN delivery
+* Admin analytics
+* Enterprise-grade security hardening
 
-The platform is optimized to handle **high-concurrency AI workloads** without blocking the main Node.js event loop.
+The system is designed to process high-concurrency AI workloads asynchronously without blocking the main Node.js event loop.
 
 ---
 
-# 🌟 Core Features
+## Core Features
 
-## 🎨 AI Image Generation
+### AI Image Generation
 
 * AI-powered text-to-image generation
-* Async generation pipeline
+* Asynchronous generation pipeline
 * Prompt optimization workflow
-* Retry & failure handling
+* Retry and failure handling
 * Intelligent generation caching
 
-## ⚡ Real-Time Infrastructure
+### Real-Time Infrastructure
 
 * Socket.io live progress updates
-* Real-time job state synchronization
+* Real-time job synchronization
 * Private user socket rooms
 * Zero polling architecture
 
-## 🧵 Distributed Queue System
+### Distributed Queue System
 
 * BullMQ background processing
 * Redis-backed reliable queues
@@ -75,7 +73,7 @@ The platform is optimized to handle **high-concurrency AI workloads** without bl
 * Queue prioritization support
 * Cancelable generation jobs
 
-## 🖼️ Image Processing Pipeline
+### Image Processing Pipeline
 
 * Automatic WebP conversion
 * Thumbnail generation
@@ -83,7 +81,7 @@ The platform is optimized to handle **high-concurrency AI workloads** without bl
 * Cloudinary CDN delivery
 * Optimized media compression
 
-## 💳 Billing & Credits
+### Billing & Credits
 
 * Stripe Checkout integration
 * Secure webhook verification
@@ -91,7 +89,7 @@ The platform is optimized to handle **high-concurrency AI workloads** without bl
 * Atomic balance mutations
 * Transaction history tracking
 
-## 📊 Admin Analytics
+### Admin Analytics
 
 * Revenue monitoring
 * Queue analytics
@@ -99,7 +97,7 @@ The platform is optimized to handle **high-concurrency AI workloads** without bl
 * User leaderboards
 * Performance insights
 
-## 🔐 Enterprise Security
+### Security
 
 * Helmet security hardening
 * API rate limiting
@@ -111,7 +109,7 @@ The platform is optimized to handle **high-concurrency AI workloads** without bl
 
 ---
 
-# 🏗️ System Architecture
+## System Architecture
 
 ```text
                     ┌────────────────────┐
@@ -148,71 +146,67 @@ The platform is optimized to handle **high-concurrency AI workloads** without bl
 
 ---
 
-# 🛠️ Tech Stack
+## Tech Stack
 
-## Frontend
+### Frontend
 
-* ⚛️ React 19
-* ⚡ Vite
-* 🎨 Tailwind CSS
-* 🎞️ Framer Motion
-* 📡 Socket.io Client
-* 📊 Recharts
+* React 19
+* Vite
+* Tailwind CSS
+* Framer Motion
+* Socket.io Client
+* Recharts
 
-## Backend
+### Backend
 
-* 🟢 Node.js
-* 🚂 Express.js
-* 🔌 Socket.io
-* 🔐 JWT Authentication
-* 🛡️ Helmet Security
+* Node.js
+* Express.js
+* Socket.io
+* JWT Authentication
+* Helmet
 
-## Database & Storage
+### Database & Storage
 
-* 🍃 MongoDB + Mongoose
-* ⚡ Redis
-* ☁️ Cloudinary CDN
+* MongoDB + Mongoose
+* Redis
+* Cloudinary
 
-## Queue & Workers
+### Queue & Workers
 
-* 🧵 BullMQ
-* 🔄 Redis Workers
-* 🖼️ Sharp Image Processing
+* BullMQ
+* Redis Workers
+* Sharp Image Processing
 
-## Payments
+### Payments
 
-* 💳 Stripe Checkout
-* 🪝 Stripe Webhooks
+* Stripe Checkout
+* Stripe Webhooks
 
-## DevOps & Infrastructure
+### DevOps & Infrastructure
 
-* 🐳 Docker
-* ⚙️ PM2
-* 🔁 GitHub Actions
-* 📈 Morgan Logging
+* Docker
+* PM2
+* GitHub Actions
+* Morgan Logging
 
 ---
 
-# 🔥 Production-Level Engineering Highlights
+## Production Engineering Highlights
 
-## ✅ Secure Stripe Architecture
+### Secure Stripe Architecture
 
-Dreamify uses a **fully secure webhook-based payment flow**.
-
-Unlike insecure client-side payment confirmations:
+Dreamify uses a secure webhook-based payment flow.
 
 * Frontend never grants credits
 * Stripe webhook verifies signatures
 * Duplicate processing is prevented
 * Transactions are immutable
 
----
-
-## ✅ Distributed AI Processing
+### Distributed AI Processing
 
 Heavy AI workloads never block the API server.
 
-Instead:
+Workflow:
 
 1. API validates request
 2. Job enters BullMQ queue
@@ -221,9 +215,7 @@ Instead:
 5. Cloudinary stores optimized image
 6. Result streams back instantly
 
----
-
-## ✅ Real-Time Updates Without Polling
+### Real-Time Updates Without Polling
 
 The frontend receives:
 
@@ -232,11 +224,9 @@ The frontend receives:
 * Completion updates
 * Error states
 
-through **Socket.io rooms** in real-time.
+through Socket.io private rooms in real time.
 
----
-
-## ✅ Optimized Media Pipeline
+### Optimized Media Pipeline
 
 Generated images are:
 
@@ -248,7 +238,7 @@ Generated images are:
 
 ---
 
-# 📂 Project Structure
+## Project Structure
 
 ```bash
 Dreamify/
@@ -275,9 +265,9 @@ Dreamify/
 
 ---
 
-# ⚙️ Local Development Setup
+## Local Development Setup
 
-## 1️⃣ Clone Repository
+### 1. Clone Repository
 
 ```bash
 git clone https://github.com/your-username/dreamify.git
@@ -287,16 +277,16 @@ cd dreamify
 
 ---
 
-## 2️⃣ Install Dependencies
+### 2. Install Dependencies
 
-### Frontend
+#### Frontend
 
 ```bash
 cd client
 npm install
 ```
 
-### Backend
+#### Backend
 
 ```bash
 cd server
@@ -305,7 +295,7 @@ npm install
 
 ---
 
-## 3️⃣ Configure Environment Variables
+### 3. Configure Environment Variables
 
 Create `.env` inside `/server`
 
@@ -331,21 +321,21 @@ CLIENT_URL=http://localhost:5173
 
 ---
 
-## 4️⃣ Run Development Servers
+### 4. Run Development Servers
 
-### Start Backend
+#### Start Backend
 
 ```bash
 npm run dev
 ```
 
-### Start Worker
+#### Start Worker
 
 ```bash
 npm run worker
 ```
 
-### Start Frontend
+#### Start Frontend
 
 ```bash
 npm run dev
@@ -353,7 +343,7 @@ npm run dev
 
 ---
 
-# 🐳 Docker Setup
+## Docker Setup
 
 ```bash
 docker-compose up --build
@@ -369,7 +359,7 @@ Services:
 
 ---
 
-# 📊 Admin Features
+## Admin Features
 
 * Queue monitoring dashboard
 * Revenue analytics
@@ -380,21 +370,21 @@ Services:
 
 ---
 
-# 🔐 Security Features
+## Security Features
 
-✔️ JWT Authentication
-✔️ HTTPOnly Secure Cookies
-✔️ Stripe Signature Verification
-✔️ API Rate Limiting
-✔️ Helmet Protection
-✔️ Centralized Error Handling
-✔️ Environment Validation
-✔️ Admin Route Protection
-✔️ CORS Hardening
+* JWT Authentication
+* HTTPOnly Secure Cookies
+* Stripe Signature Verification
+* API Rate Limiting
+* Helmet Protection
+* Centralized Error Handling
+* Environment Validation
+* Admin Route Protection
+* CORS Hardening
 
 ---
 
-# 📈 Scalability Design
+## Scalability Design
 
 Dreamify is engineered for horizontal scaling:
 
@@ -403,11 +393,11 @@ Dreamify is engineered for horizontal scaling:
 * Stateless Express APIs
 * CDN-delivered assets
 * Socket.io room architecture
-* Optimized DB indexing
+* Optimized database indexing
 
 ---
 
-# 🧪 Testing
+## Testing
 
 ```bash
 npm test
@@ -423,9 +413,9 @@ Includes:
 
 ---
 
-# 🚀 Deployment
+## Deployment
 
-Production-ready deployment supports:
+Production deployment supports:
 
 * Docker containers
 * PM2 clustering
@@ -435,25 +425,14 @@ Production-ready deployment supports:
 
 ---
 
-# 🧠 Future Roadmap
+## Future Roadmap
 
 * AI style presets
 * Team workspaces
 * Multi-provider AI routing
 * Voice prompt generation
-* Mobile app
+* Mobile application
 * WebRTC collaboration
 * AI prompt enhancement engine
-
----
-
-
-# ⭐ Support
-
-If you like this project:
-
-🌟 Star the repository
-🍴 Fork the project
-🛠️ Contribute improvements
 
 ---
