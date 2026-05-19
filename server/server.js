@@ -1,6 +1,7 @@
 import { createServer } from 'http';
 import app from './app.js';
 import { initSocket } from './config/socket.js';
+import './workers/worker.js';
 
 const PORT = process.env.PORT || 4000;
 
