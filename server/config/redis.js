@@ -17,7 +17,7 @@ if (process.env.NODE_ENV !== 'test' && !process.env.REDIS_URL) {
 
 const connection = process.env.NODE_ENV === 'test'
   ? { on: () => {}, disconnect: async () => {} }
-  : new Redis(process.env.REDIS_URL || redisConfig);
+  : new Redis(process.env.REDIS_URL, redisConfig);
 
 if (process.env.NODE_ENV !== 'test') {
   connection.on('error', (err) => {
