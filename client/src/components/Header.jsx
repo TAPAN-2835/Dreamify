@@ -46,13 +46,24 @@ const Header = () => {
         <img src={assets.star_icon} alt="" />
       </motion.div>
 
-      <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 2 }} className='text-4xl max-w-[300px] sm:text-7xl sm:max-w-[590px]  mx-auto mt-5 text-center'>Turn Text Into <span className='text-blue-600'>Images</span>, Instantly. </motion.h1>
+      <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 2 }} className='text-4xl max-w-[300px] sm:text-7xl sm:max-w-[590px] mx-auto mt-5 text-center'>Turn Text Into <span className='text-blue-600'>Images</span>, Instantly.</motion.h1>
 
-      <motion.p className='text-center max-w-xl mx-auto mt-5' initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{delay:0.6,duration:0.8}} >Bring your imagination to life with Dreamify. Type your idea, and our AI creates your visual masterpiece in seconds.</motion.p>
+      <motion.p className='text-center max-w-xl mx-auto mt-5 text-gray-600 dark:text-gray-300' initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{delay:0.6,duration:0.8}}>Bring your imagination to life with Dreamify. Type your idea, and our AI creates your visual masterpiece in seconds.</motion.p>
 
-      <motion.button onClick={onClickHandler} className='sm:text-lg text-white bg-black w-auto mt-8 px-12 py-2.5 flex items-center gap-2 rounded-full shadow-lg hover:scale-110 hover:bg-blue-700 transition-all duration-300' whileHover={{scale:1.1, backgroundColor:'#2563eb'}} whileTap={{scale:0.95}} initial={{opacity:0}} animate={{opacity:1}} transition={{default:{duration:0.5},opacity:{delay:0.8,duration:1}}}>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.9 }} className='max-w-xl mx-auto mt-6'>
+        <p className='text-sm text-gray-500 dark:text-gray-300 mb-3'>Need inspiration? Try one of these prompts:</p>
+        <div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
+          {['Dreamy landscape', 'Futuristic portrait', 'Abstract neon art'].map((title, index) => (
+            <button key={index} onClick={() => navigate('/result', { state: { prompt: title } })} className='text-xs sm:text-sm text-blue-600 border border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-full px-4 py-2 transition'>
+              {title}
+            </button>
+          ))}
+        </div>
+      </motion.div>
+
+      <motion.button onClick={onClickHandler} className='sm:text-lg text-white bg-black w-auto mt-8 px-14 py-3 flex items-center gap-3 rounded-full shadow-lg hover:scale-105 hover:bg-blue-700 transition-all duration-300' whileHover={{scale:1.02, backgroundColor:'#2563eb'}} whileTap={{scale:0.97}} initial={{opacity:0}} animate={{opacity:1}} transition={{default:{duration:0.5},opacity:{delay:1.1,duration:1}}}>
         Generate Images
-        <img className='h-6' src={assets.star_group} alt="" />
+        <img className='h-6' src={assets.star_group} alt="Magic sparkles" />
       </motion.button>
 
       {/* Sample Images Section (2x2 grid on mobile, row on larger screens) */}

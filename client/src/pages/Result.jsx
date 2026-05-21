@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppContext } from '../context/AppContext';
@@ -26,6 +27,8 @@ const randomPrompts = [
 ];
 
 const Result = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [image, setImage] = useState(assets.sample_img_1);
   const [blurPlaceholder, setBlurPlaceholder] = useState('');
   const [isImageLoaded, setImageLoaded] = useState(false);
@@ -38,7 +41,18 @@ const Result = () => {
   const [hasFailed, setHasFailed] = useState(false);
   const [failedMessage, setFailedMessage] = useState('');
 
-  const { generateImage, loadCreditsData, backendUrl, token } = useContext(AppContext);
+  const { generateImage, loadCreditsData, backendUrl, token, credit } = useContext(AppContext);
+  const suggestedPrompts = [
+    'A futuristic city skyline at sunset with neon lights',
+    'A magical forest with glowing mushrooms and fairies',
+    'An astronaut exploring a pastel-colored planet',
+  ];
+
+  useEffect(() => {
+    if (location.state?.prompt) {
+      setInput(location.state.prompt);
+    }
+  }, [location.state]);
 
   // Keyboard shortcut: R = generate another, D = download
   useEffect(() => {
@@ -129,7 +143,13 @@ const Result = () => {
       className="flex flex-col min-h-[90vh] justify-center items-center py-10"
     >
       <div className="w-full max-w-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-3xl shadow-2xl p-8 flex flex-col items-center border border-gray-100 dark:border-gray-700">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 tracking-tight">✨ AI Image Studio</h2>
+        <div className='w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4'>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">✨ AI Image Studio</h2>
+            <p className='text-sm text-gray-500 dark:text-gray-400 mt-2'>Get one image for 1 credit. Your current balance is <span className='font-semibold text-blue-600 dark:text-blue-400'>{credit !== false ? credit : '...'} credits</span>.</p>
+          </div>
+          <button onClick={() => navigate('/buy')} className='bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition'>Need more credits?</button>
+        </div>
         <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">Shortcuts: <kbd className="bg-gray-100 px-1 rounded">R</kbd> new · <kbd className="bg-gray-100 px-1 rounded">D</kbd> download</p>
 
         {/* Image Preview */}
@@ -182,6 +202,13 @@ const Result = () => {
               <button type="button" onClick={handleRandomPrompt} disabled={loading} title="Random prompt"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 transition disabled:opacity-30">🎲</button>
             </div>
+            <div className='flex flex-wrap gap-2 text-sm'>
+              {suggestedPrompts.map((option) => (
+                <button key={option} type='button' onClick={() => setInput(option)} className='text-xs sm:text-sm text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700 rounded-full px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-800 transition'>
+                  {option}
+                </button>
+              ))}
+            </div>
             <button type="submit" disabled={loading || !input.trim()}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 text-sm font-semibold rounded-2xl transition disabled:opacity-50 disabled:cursor-not-allowed active:scale-95">
               {loading ? (STAGE_LABELS[jobStage] || 'Processing...') : '✨ Generate Image'}
@@ -209,6 +236,15 @@ const Result = () => {
             </div>
           </motion.div>
         )}
+      </div>
+      <div className='sm:hidden fixed inset-x-0 bottom-0 p-3 bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-700 shadow-xl backdrop-blur-lg'>
+        <div className='flex items-center justify-between gap-3'>
+          <div>
+            <p className='text-xs text-gray-500 dark:text-gray-400'>Credits</p>
+            <p className='text-sm font-semibold text-gray-900 dark:text-gray-100'>{credit !== false ? credit : 'Loading...'}</p>
+          </div>
+          <button onClick={() => navigate('/buy')} className='bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition'>Buy Credits</button>
+        </div>
       </div>
     </motion.div>
   );

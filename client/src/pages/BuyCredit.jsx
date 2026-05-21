@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import Button from '../components/Button';
 
 const BuyCredit = () => {
-  const { user, backendUrl, credit } = useContext(AppContext);
+  const { user, backendUrl, credit, setShowLogin } = useContext(AppContext);
 
   const handlePurchase = async (planId) => {
     try {
@@ -47,16 +47,21 @@ const BuyCredit = () => {
       viewport={{ once: true }}
       className="min-h-[80vh] text-center pt-8 mb-10"
     >
-      {/* Credit Balance Display */}
-      {user && (
+      <div className='mb-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-100 to-teal-100 px-5 py-3 shadow-sm'>
+        <span className='text-sm font-semibold text-blue-800'>Instant AI credits</span>
+        <span className='text-xs text-blue-600'>1 credit per image · safe checkout</span>
+      </div>
+      {user ? (
         <div className="mb-6 flex justify-center items-center gap-2">
           <span className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold text-lg shadow">
             Credits: {credit !== false ? credit : '...'}
           </span>
         </div>
+      ) : (
+        <div className='mb-6 text-sm text-gray-600 dark:text-gray-300'>Log in to save your purchases and track usage.</div>
       )}
-      <button className="border border-gray-400 px-10 py-2 rounded-full mb-6">Our Plans</button>
-      <h1 className="text-center text-3xl font-medium mb-6 sm:mb-10">Choose the plan</h1>
+      <h1 className="text-center text-3xl font-semibold mb-4 sm:mb-10">Choose the plan that fits your workflow</h1>
+      <p className='max-w-2xl mx-auto text-gray-600 dark:text-gray-300 mb-8'>Dreamify makes it easy to buy credits, generate images fast, and unlock smoother creative workflows with higher volume plans.</p>
 
       <div className="flex flex-wrap justify-center gap-8 text-left">
         {plans.map((item, index) => {
@@ -77,11 +82,15 @@ const BuyCredit = () => {
               </p>
 
               <Button
-                onClick={() => handlePurchase(item.id)}
+                onClick={() => {
+                  if (!user) return setShowLogin(true);
+                  handlePurchase(item.id);
+                }}
+                variant={user ? 'primary' : 'secondary'}
                 className="w-full mt-8 text-sm min-w-52"
-                disabled={!user}
+                disabled={false}
               >
-                {user ? 'Purchase' : 'Get Started'}
+                {user ? 'Purchase' : 'Login to buy'}
               </Button>
             </div>
           );
