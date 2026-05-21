@@ -5,7 +5,12 @@ import CreditTransaction from '../models/CreditTransaction.js';
 import Stripe from 'stripe';
 
 const billingRouter = express.Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error('STRIPE_SECRET_KEY is not set in environment');
+  return new Stripe(key);
+}
 
 // GET /api/billing/invoices?page=1&limit=20&type=purchase
 billingRouter.get('/invoices', adminAuth, async (req, res, next) => {

@@ -9,7 +9,6 @@ const isTest = process.env.NODE_ENV === 'test';
 const env = cleanEnv(process.env, {
   JWT_SECRET: isTest ? str({ default: process.env.JWT_SECRET || 'test_secret' }) : str(),
   MONGODB_URI: isTest ? str({ default: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/dreamify_test' }) : str(),
-  REDIS_URL: isTest ? str({ default: process.env.REDIS_URL }) : str(),
   STRIPE_SECRET_KEY: isTest ? str({ default: process.env.STRIPE_SECRET_KEY || 'sk_test_dummy' }) : str(),
   STRIPE_WEBHOOK_SECRET: isTest ? str({ default: process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test' }) : str(),
   CLIPDROP_API_KEY: isTest ? str({ default: process.env.CLIPDROP_API_KEY || 'test_clipdrop_key' }) : str(),
@@ -29,19 +28,9 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express';
-import imageGenerationQueue from './queues/imageGeneration.queue.js';
-import adminAuth from './middleware/adminAuth.js';
 
 const app = express();
 
-// Configure Bull Board
-const serverAdapter = new ExpressAdapter();
-serverAdapter.setBasePath('/admin/queues');
-const bullBoardQueues = imageGenerationQueue ? [new BullMQAdapter(imageGenerationQueue)] : [];
-createBullBoard({ queues: bullBoardQueues, serverAdapter });
 
 // Security middleware
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -82,9 +71,6 @@ app.use('/api/user', userRouter);
 app.use('/api/image', imageRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/billing', billingRouter);
-
-// Bull Board (admin only)
-app.use('/admin/queues', adminAuth, serverAdapter.getRouter());
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));

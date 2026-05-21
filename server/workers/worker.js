@@ -1,7 +1,4 @@
-import '../config/db.js';
-import './image.worker.js';
-import connectedDB from '../config/db.js';
+// Background workers are disabled when running without Redis.
+// This file intentionally does not start Bull workers.
 
-connectedDB();
-
-console.log('Worker process started and waiting for jobs...');
+console.log('Background workers disabled (Redis removed)');

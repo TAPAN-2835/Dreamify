@@ -59,7 +59,7 @@ adminRouter.get('/stats', async (req, res, next) => {
         { $group: { _id: null, total: { $sum: { $abs: '$amount' } } } }
       ]),
 
-      // BullMQ queue counts
+      // Job queue counts (stubbed for in-process queue)
       Promise.all([
         imageGenerationQueue.getWaitingCount(),
         imageGenerationQueue.getActiveCount(),
